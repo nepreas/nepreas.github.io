@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VDOT TRIP Program Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .quiz-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .question p {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .options label {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #e9e9e9;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .options label:hover {
+            background-color: #dcdcdc;
+        }
+        .options input[type="radio"] {
+            margin-right: 10px;
+        }
+        .feedback {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .correct {
+            color: green;
+        }
+        .incorrect {
+            color: red;
+        }
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .result {
+            text-align: center;
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+        .result button {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>VDOT TRIP Program Quiz</h1>
+        <div id="quiz">
+            </div>
+        <div class="navigation-buttons">
+            <button id="prevBtn" disabled>Previous</button>
+            <button id="nextBtn">Next</button>
+            <button id="submitBtn" style="display: none;">Submit Quiz</button>
+        </div>
+        <div id="result" class="result" style="display: none;">
+            </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "What is the specific objective of the VDOT TRIP program?",
+                options: [
+                    "To train first responders on heavy-duty towing procedures.",
+                    "To provide standard roadside assistance for all vehicle types.",
+                    "To reduce the impact of major commercial vehicle incidents while achieving the aggressive live lane clearance goal of 90 minutes or less.",
+                    "To manage all VDOT towing contracts statewide."
+                ],
+                answer: "To reduce the impact of major commercial vehicle incidents while achieving the aggressive live lane clearance goal of 90 minutes or less."
+            },
+            {
+                question: "What is the aggressive live lane clearance goal for commercial vehicle incidents under the TRIP program?",
+                options: [
+                    "60 minutes or less.",
+                    "90 minutes or less.",
+                    "120 minutes or less.",
+                    "As quickly as possible, regardless of time."
+                ],
+                answer: "90 minutes or less."
+            },
+            {
+                question: "According to the report covering July 1, 2023 – June 30, 2024, what was the statewide percentage of times TRIP partners achieved their incentive goals?",
+                options: [
+                    "78%",
+                    "88%",
+                    "94%.",
+                    "99%"
+                ],
+                answer: "94%."
+            },
+            {
+                question: "What additional safety requirement was implemented for TRIP support units statewide starting in July 2023, partly as a result of a severe commercial vehicle fire incident?",
+                options: [
+                    "Steel-toed boots.",
+                    "Reflective vests.",
+                    "Flame-resistant gloves.",
+                    "Tyvek suits and boots."
+                ],
+                answer: "Flame-resistant gloves."
+            },
+            {
+                question: "Under what conditions does the TRIP program automatically add 15 minutes to established response times?",
+                options: [
+                    "During overnight or weekend activations.",
+                    "When heavy traffic conditions are present.",
+                    "When a VDOT district or region declares any weather emergency.",
+                    "For incidents involving hazardous materials."
+                ],
+                answer: "When a VDOT district or region declares any weather emergency."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const userAnswers = new Array(questions.length).fill(null); // To store user's selected answers
+
+        const quizDiv = document.getElementById('quiz');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const resultDiv = document.getElementById('result');
+
+        function loadQuestion() {
+            const questionData = questions[currentQuestionIndex];
+            quizDiv.innerHTML = `
+                <div class="question">
+                    <p>Question ${currentQuestionIndex + 1}: ${questionData.question}</p>
+                    <div class="options">
+                        ${questionData.options.map((option, index) => `
+                            <label>
+                                <input type="radio" name="question${currentQuestionIndex}" value="${option}" ${userAnswers[currentQuestionIndex] === option ? 'checked' : ''}>
+                                ${option}
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div class="feedback" id="feedback${currentQuestionIndex}"></div>
+                </div>
+            `;
+            updateNavigationButtons();
+
+            // Add event listeners to radio buttons to store answers and provide immediate feedback
+            document.querySelectorAll(`input[name="question${currentQuestionIndex}"]`).forEach(radio => {
+                radio.addEventListener('change', (event) => {
+                    const selectedAnswer = event.target.value;
+                    userAnswers[currentQuestionIndex] = selectedAnswer;
+                    checkAnswer(selectedAnswer);
+                });
+            });
+        }
+
+        function checkAnswer(selectedAnswer) {
+            const questionData = questions[currentQuestionIndex];
+            const feedbackDiv = document.getElementById(`feedback${currentQuestionIndex}`);
+            if (selectedAnswer === questionData.answer) {
+                feedbackDiv.textContent = "Correct!";
+                feedbackDiv.className = "feedback correct";
+            } else {
+                feedbackDiv.textContent = `Incorrect. The correct answer was: ${questionData.answer}`;
+                feedbackDiv.className = "feedback incorrect";
+            }
+        }
+
+        function updateNavigationButtons() {
+            prevBtn.disabled = currentQuestionIndex === 0;
+            nextBtn.style.display = currentQuestionIndex === questions.length - 1 ? 'none' : 'inline-block';
+            submitBtn.style.display = currentQuestionIndex === questions.length - 1 ? 'inline-block' : 'none';
+        }
+
+        function showNextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            }
+        }
+
+        function showPreviousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        function submitQuiz() {
+            score = 0;
+            questions.forEach((question, index) => {
+                if (userAnswers[index] === question.answer) {
+                    score++;
+                }
+            });
+
+            quizDiv.style.display = 'none';
+            prevBtn.style.display = 'none';
+            nextBtn.style.display = 'none';
+            submitBtn.style.display = 'none';
+
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <h2>Quiz Complete!</h2>
+                <p>You scored ${score} out of ${questions.length} questions correctly.</p>
+                <button onclick="location.reload()">Retake Quiz</button>
+            `;
+        }
+
+        // Event Listeners
+        nextBtn.addEventListener('click', showNextQuestion);
+        prevBtn.addEventListener('click', showPreviousQuestion);
+        submitBtn.addEventListener('click', submitQuiz);
+
+        // Initial load
+        loadQuestion();
+    </script>
+</body>
+</html>
