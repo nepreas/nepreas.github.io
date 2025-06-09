@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I-95 Winter Storm Incident Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .quiz-option {
+            transition: all 0.2s ease-in-out;
+        }
+        .quiz-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .quiz-option.selected {
+            border-color: #3b82f6; /* blue-500 */
+            background-color: #eff6ff; /* blue-50 */
+        }
+        .quiz-option.correct {
+            border-color: #22c55e; /* green-500 */
+            background-color: #f0fdf4; /* green-50 */
+        }
+        .quiz-option.incorrect {
+            border-color: #ef4444; /* red-500 */
+            background-color: #fef2f2; /* red-50 */
+        }
+        .feedback-icon {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-4xl">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">I-95 Winter Storm Incident Quiz</h1>
+            <p class="text-md text-gray-600 mt-2">Test your knowledge of the After-Action Report for the Jan 3-4, 2022 winter weather event.</p>
+        </header>
+
+        <div id="quiz-container" class="space-y-8">
+            <!-- Quiz questions will be injected here by JavaScript -->
+        </div>
+
+        <div id="results-container" class="hidden text-center mt-10 p-8 bg-white rounded-xl shadow-lg">
+            <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">Quiz Complete!</h2>
+            <p class="text-lg text-gray-700 mt-2">You scored <span id="score" class="font-bold text-blue-600">0</span> out of <span id="total-questions" class="font-bold">10</span>.</p>
+            <p id="result-message" class="text-md mt-4"></p>
+            <button id="retry-button" class="mt-6 bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition duration-300">
+                Try Again
+            </button>
+        </div>
+
+        <div class="mt-10 text-center">
+            <button id="submit-button" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition duration-300 shadow-md">
+                Check Answers
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // --- Data for the Quiz ---
+            const quizData = [
+                {
+                    question: "What is the primary purpose of the After-Action Report (AAR) for the January 3–4, 2022, winter weather event, as stated by CNA?",
+                    options: [
+                        "To investigate specific individuals or entities responsible for the incident.",
+                        "To assign blame for the cascading failures during the response operations.",
+                        "To analyze VDOT, VSP, and VDEM decision-making and actions to understand what happened, why it happened, and what could be done next time to mitigate the impact of long-term closures, especially during severe weather.",
+                        "To solely reconstruct the factual timeline of events without further analysis."
+                    ],
+                    answer: "To analyze VDOT, VSP, and VDEM decision-making and actions to understand what happened, why it happened, and what could be done next time to mitigate the impact of long-term closures, especially during severe weather."
+                },
+                {
+                    question: "Leading up to January 3, 2022, how did the National Weather Service (NWS) and VDOT's private forecasting service (DTN Weather) predictions compare to the actual snowfall experienced in parts of Central Virginia?",
+                    options: [
+                        "The NWS forecast correctly predicted the exact snowfall totals and rates, while DTN Weather overestimated them.",
+                        "Both NWS and DTN Weather initially predicted moderate snowfall amounts, but updated forecasts on January 3 showed increasing totals; however, the actual snowfall (10.8–14.6 inches in some areas) significantly exceeded these forecasts.",
+                        "The NWS forecast predicted minimal snow, but DTN Weather accurately predicted the high snowfall rates.",
+                        "The forecasts were highly accurate, and the actual conditions matched the higher end of the predictions precisely."
+                    ],
+                    answer: "Both NWS and DTN Weather initially predicted moderate snowfall amounts, but updated forecasts on January 3 showed increasing totals; however, the actual snowfall (10.8–14.6 inches in some areas) significantly exceeded these forecasts."
+                },
+                {
+                    question: "Which combination of factors was most significant in leading to the rapid deterioration and impassability of I-95 on January 3, according to the incident reconstruction?",
+                    options: [
+                        "Low traffic volume combined with insufficient snowplow mobilization.",
+                        "Preceding rain and warm temperatures preventing pre-treatment, extremely high traffic volumes (including an increase in tractor trailers during the past several years), and rapidly increasing snowfall rates that approached three inches per hour, exacerbated by numerous traffic incidents and jackknifed tractor trailers.",
+                        "VDOT's decision to close I-95 too early, redirecting traffic onto unprepared secondary roads.",
+                        "Exclusive reliance on VSP helicopters for situational awareness, which were unavailable."
+                    ],
+                    answer: "Preceding rain and warm temperatures preventing pre-treatment, extremely high traffic volumes (including an increase in tractor trailers during the past several years), and rapidly increasing snowfall rates that approached three inches per hour, exacerbated by numerous traffic incidents and jackknifed tractor trailers."
+                },
+                {
+                    question: "According to the report, what challenge did state agencies face in understanding the full scope of the I-95 incident as it escalated?",
+                    options: [
+                        "Deliberate withholding of information by field personnel.",
+                        "Loss of situational awareness due to breakdown of traditional information gathering methods, such as inoperable traffic cameras and issues with dispatch systems, coupled with staffing shortages.",
+                        "An over-reliance on accurate real-time data from private navigation apps.",
+                        "A lack of any existing technology or personnel to monitor road conditions."
+                    ],
+                    answer: "Loss of situational awareness due to breakdown of traditional information gathering methods, such as inoperable traffic cameras and issues with dispatch systems, coupled with staffing shortages."
+                },
+                {
+                    question: "Why were the I-95 express lanes generally kept closed to public traffic later in the day on January 3?",
+                    options: [
+                        "They were undergoing maintenance and were unsafe for public use.",
+                        "VDOT wanted to use them for an experimental snow removal technique.",
+                        "To keep them available for first responders and to allow VDOT to turn plows around, aligning with standard snow practices.",
+                        "They were too narrow for snowplows to operate effectively."
+                    ],
+                    answer: "To keep them available for first responders and to allow VDOT to turn plows around, aligning with standard snow practices."
+                },
+                {
+                    question: "What was the primary reasoning behind state agencies not implementing a formal wellness check mission for stranded motorists?",
+                    options: [
+                        "They did not have any personnel available in the field.",
+                        "They were confident all motorists had sufficient supplies to last for days.",
+                        "Their primary mission was to clear incidents and remove snow to get traffic moving, and a formal wellness check mission would have diverted resources away from this goal.",
+                        "It is illegal for state personnel to approach stranded vehicles on interstates."
+                    ],
+                    answer: "Their primary mission was to clear incidents and remove snow to get traffic moving, and a formal wellness check mission would have diverted resources away from this goal."
+                },
+                {
+                    question: "What was a key limitation regarding the potential deployment of the Virginia National Guard for direct assistance during the January 3-4 event?",
+                    options: [
+                        "The Virginia National Guard was already deployed to an out-of-state emergency.",
+                        "The Virginia National Guard is not a quick reaction force, typically requiring 12-24 hours and a formal emergency declaration to mobilize and deploy personnel, which was not pre-emptively issued.",
+                        "Their equipment was not suitable for winter weather operations.",
+                        "All National Guard personnel were stranded in the same traffic jam."
+                    ],
+                    answer: "The Virginia National Guard is not a quick reaction force, typically requiring 12-24 hours and a formal emergency declaration to mobilize and deploy personnel, which was not pre-emptively issued."
+                },
+                {
+                    question: "How did the communication with the public, specifically the Wireless Emergency Alert (WEA) sent on January 4, contribute to public frustration?",
+                    options: [
+                        "The WEA was never sent, leaving the public uninformed.",
+                        "The WEA contained incorrect weather forecasts.",
+                        "The WEA's language was misleading, leading stranded drivers to mistakenly interpret it as meaning emergency workers would soon be coming car-to-car, which did not happen.",
+                        "The WEA only targeted out-of-state drivers, ignoring Virginia residents."
+                    ],
+                    answer: "The WEA's language was misleading, leading stranded drivers to mistakenly interpret it as meaning emergency workers would soon be coming car-to-car, which did not happen."
+                },
+                {
+                    question: "Beyond snow removal capabilities, what unique weather-related conditions exacerbated the poor road conditions on January 3-4?",
+                    options: [
+                        "Unusually dry conditions leading to dust storms.",
+                        "Warm temperatures preceding the storm and significant rainfall, which prevented road pretreatment and softened the ground, leading to more tree fall.",
+                        "A sudden heatwave that melted all snow too quickly.",
+                        "A phenomenon where snow adhered directly to tires, making vehicles unmovable."
+                    ],
+                    answer: "Warm temperatures preceding the storm and significant rainfall, which prevented road pretreatment and softened the ground, leading to more tree fall."
+                },
+                {
+                    question: "What significant long-term change has occurred in tractor-trailer traffic on Virginia interstates since 2019, contributing to challenges during incidents?",
+                    options: [
+                        "A sharp decrease in tractor-trailer traffic due to decreased demand.",
+                        "A shift to nighttime-only travel for all tractor-trailers.",
+                        "An almost 30 percent increase in tractor-trailer traffic, partly due to supply-chain issues leading to increased just-in-time trucking and altered travel patterns.",
+                        "A mandate for all tractor-trailers to exclusively use secondary roads."
+                    ],
+                    answer: "An almost 30 percent increase in tractor-trailer traffic, partly due to supply-chain issues leading to increased just-in-time trucking and altered travel patterns."
+                }
+            ];
+
+            const quizContainer = document.getElementById('quiz-container');
+            const submitButton = document.getElementById('submit-button');
+            const resultsContainer = document.getElementById('results-container');
+            const retryButton = document.getElementById('retry-button');
+
+            let userAnswers = {};
+
+            // --- Function to build the quiz ---
+            function buildQuiz() {
+                quizContainer.innerHTML = '';
+                resultsContainer.classList.add('hidden');
+                submitButton.classList.remove('hidden');
+                userAnswers = {};
+
+                quizData.forEach((item, questionIndex) => {
+                    const questionElement = document.createElement('div');
+                    questionElement.className = 'bg-white p-6 rounded-xl shadow-md';
+                    questionElement.id = `question-${questionIndex}`;
+
+                    const questionText = document.createElement('p');
+                    questionText.className = 'text-lg font-semibold text-gray-800 mb-4';
+                    questionText.innerHTML = `<span class="font-bold">Question ${questionIndex + 1}:</span> ${item.question}`;
+
+                    const optionsContainer = document.createElement('div');
+                    optionsContainer.className = 'space-y-3';
+
+                    const feedbackIconContainer = document.createElement('span');
+                    feedbackIconContainer.className = 'ml-3 feedback-icon';
+                    
+                    questionElement.appendChild(questionText);
+                    questionText.appendChild(feedbackIconContainer);
+
+                    item.options.forEach((option, optionIndex) => {
+                        const optionElement = document.createElement('div');
+                        optionElement.className = 'quiz-option flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer';
+                        optionElement.dataset.question = questionIndex;
+                        optionElement.dataset.option = option;
+
+                        const radioInput = document.createElement('input');
+                        radioInput.type = 'radio';
+                        radioInput.name = `question${questionIndex}`;
+                        radioInput.className = 'hidden';
+                        
+                        const optionText = document.createElement('label');
+                        optionText.className = 'ml-3 text-gray-700 flex-1 cursor-pointer';
+                        optionText.textContent = option;
+
+                        optionElement.appendChild(radioInput);
+                        optionElement.appendChild(optionText);
+                        optionsContainer.appendChild(optionElement);
+
+                        optionElement.addEventListener('click', () => {
+                            userAnswers[questionIndex] = option;
+                            // Update visual selection
+                            document.querySelectorAll(`div[data-question='${questionIndex}']`).forEach(el => el.classList.remove('selected'));
+                            optionElement.classList.add('selected');
+                        });
+                    });
+                    
+                    questionElement.appendChild(optionsContainer);
+                    quizContainer.appendChild(questionElement);
+                });
+            }
+
+            // --- Function to show results ---
+            function showResults() {
+                let score = 0;
+                quizData.forEach((item, questionIndex) => {
+                    const questionElement = document.getElementById(`question-${questionIndex}`);
+                    const feedbackIcon = questionElement.querySelector('.feedback-icon');
+
+                    const correctOptionDiv = questionElement.querySelector(`div[data-option="${item.answer}"]`);
+                    correctOptionDiv.classList.add('correct');
+                    correctOptionDiv.classList.remove('selected');
+
+                    if (userAnswers[questionIndex] === item.answer) {
+                        score++;
+                        feedbackIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+                    } else {
+                        feedbackIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2 2m2-2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+                        if (userAnswers[questionIndex]) {
+                            const selectedOptionDiv = questionElement.querySelector(`div[data-option="${userAnswers[questionIndex]}"]`);
+                            selectedOptionDiv.classList.add('incorrect');
+                            selectedOptionDiv.classList.remove('selected');
+                        }
+                    }
+                    feedbackIcon.style.display = 'inline-block';
+                    // Disable further clicks
+                    questionElement.querySelectorAll('.quiz-option').forEach(opt => opt.style.pointerEvents = 'none');
+                });
+                
+                document.getElementById('score').textContent = score;
+                document.getElementById('total-questions').textContent = quizData.length;
+
+                const resultMessage = document.getElementById('result-message');
+                if (score === quizData.length) {
+                    resultMessage.textContent = "Excellent! You aced it!";
+                    resultMessage.className = "text-md mt-4 text-green-600 font-semibold";
+                } else if (score >= quizData.length / 2) {
+                    resultMessage.textContent = "Good job! You know your stuff.";
+                    resultMessage.className = "text-md mt-4 text-yellow-600 font-semibold";
+                } else {
+                    resultMessage.textContent = "You might want to review the report again. Keep trying!";
+                    resultMessage.className = "text-md mt-4 text-red-600 font-semibold";
+                }
+
+
+                resultsContainer.classList.remove('hidden');
+                submitButton.classList.add('hidden');
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            }
+            
+            // --- Event Listeners ---
+            submitButton.addEventListener('click', showResults);
+            retryButton.addEventListener('click', () => {
+                buildQuiz();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            
+            // --- Initial Load ---
+            buildQuiz();
+        });
+    </script>
+
+</body>
+</html>
