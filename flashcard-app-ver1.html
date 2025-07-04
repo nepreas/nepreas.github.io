@@ -1,0 +1,197 @@
+<!-- ‘headers by earl’
+ *
+ * whatDoesThisCodeDoForALiving? 
+ * Provides a deck of flashcards in HTML-based online format.
+ * This is a single-page website.
+ *
+ * dateOfFirstDeployment 
+ * 04 July 2025
+ *
+ * originOfTheCode
+ * Google Gemini 2.5 Pro, the Google Gem named 'Coding partner'.
+ *
+ * thisLineUnusedAtThisTime 
+ *
+ *
+ * ‘headers by earl’
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompting: Google's Five Step Rule</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for the flashcard flip animation */
+        .card-container {
+            perspective: 1000px;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen font-sans">
+
+    <div class="w-full max-w-2xl px-4">
+        <h1 class="text-4xl font-bold text-center text-gray-800 mb-8">Prompting: Google's Five Step Rule</h1>
+
+        <div id="flashcard-container" class="mb-8">
+            <!-- Flashcard will be inserted here by JavaScript -->
+        </div>
+
+        <div class="flex justify-center space-x-4">
+            <button id="prev-btn" class="bg-white text-gray-800 font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-gray-200 transition-colors duration-300">Previous</button>
+            <button id="flip-btn" class="bg-blue-600 text-white font-semibold py-2 px-8 rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-300">Flip</button>
+            <button id="next-btn" class="bg-white text-gray-800 font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-gray-200 transition-colors duration-300">Next</button>
+        </div>
+        
+        <div id="card-counter" class="text-center text-gray-600 mt-4"></div>
+    </div>
+
+    <script>
+        // CSV data representing "Front" and "Back" of flashcards
+        const csvData = `"Front","Back"
+"What is prompting?","Prompting is the process of providing specific instructions to a generative AI (GenAI) tool to receive new information or to achieve a desired outcome on a task."
+"What are the components of the prompting framework, often remembered by the acronym T.C.R.E.I.?","The components are Task, Context, References, Evaluate, and Iterate."
+"In the prompting framework, what does ""Task"" involve?","Task involves describing what you want the generative AI tool to help you with, including a persona and a format preference."
+"What does ""Persona"" refer to in a prompt's ""Task""?","Persona refers to the expertise you want the GenAI tool to draw from, or asking it to create output for a specific audience."
+"What does ""Format"" refer to in a prompt's ""Task""?","Format refers to how you want the output to appear, such as a bulleted list, short sentences, or a table."
+"What is the purpose of ""Context"" in the prompting framework?","Context is used to provide the necessary details to help the GenAI tool understand what you need from it."
+"What are ""References"" in the prompting framework used for?","References are used to give GenAI tools examples to work from, which can mean asking a GenAI tool to learn from the tone, style, or length of a given reference."
+"Explain ""Few-shot prompting.""","Few-shot prompting involves providing multiple references or examples to a GenAI tool, typically between two and five, to give it more context."
+"What is the concept of ""ABI"" in prompting?","ABI stands for ""Always Be Iterating,"" which means continuously evaluating and refining your prompt until you get the desired output."
+"Name two iteration methods to improve GenAI outputs.","Two iteration methods are: 1. Revisit the prompting framework to add more specificity to your task, context, and references. 2. Separate your long prompt into shorter, individual sentences."
+"What is an ""analogous task"" in prompting?","An analogous task is a task that is very similar to the one you are trying to complete, but different enough to trigger a new response from the GenAI tool."
+"What are ""Modalities"" in the context of GenAI tools?","Modalities are the different formats in which GenAI tools receive or produce information, such as text, images, video, audio, or code."
+"What is ""Multimodal Prompting""?","Multimodal prompting is the essence of using different types of media, such as inputting an image and text or audio and text, to prompt a generative AI tool."
+"When creating an image prompt, what kind of descriptions are important?","When creating an image prompt, it's important to provide vivid descriptions specifying the size, color, and position of things in the image, as well as the overall aesthetic."
+"Why is it crucial to use GenAI tools responsibly at work?","It's crucial to use GenAI tools responsibly at work to ensure alignment with organizational policies and local laws, avoid entering confidential or sensitive data, and to evaluate outputs for potential bias and errors."
+"What are ""hallucinations"" in GenAI outputs?","Hallucinations are when a GenAI tool provides outputs that are inconsistent, incorrect, or even nonsensical, often occurring when given vague instructions or when it guesses at an answer."
+"What does a ""human-in-the-loop"" approach mean for GenAI use?","A human-in-the-loop approach means that a human should verify GenAI outputs before using them, as GenAI tools do not think critically like humans can."
+"How can you address potential biases in GenAI outputs?","You can address potential biases by inputting specific, detailed prompts, iterating as needed, and using inclusive language that includes people of all backgrounds, genders, and ethnicities while avoiding stereotypes."
+"Name one benefit of using GenAI for email drafting.","GenAI tools can help you draft emails, adjust your tone or style of writing, and give you ideas on how to change your approach to communication."
+"What is a ""long context window"" in GenAI tools?","A long context window allows for the processing of a large amount of information in different formats at once, which enhances the GenAI model's ability to understand and generate more coherent and contextually relevant responses."
+"What is ""Chain-of-Density prompting""?","Chain-of-Density prompting is a method where you get increasingly concise summaries, resulting in a chain of refined outputs that become shorter and more direct without losing important points."
+"What is ""Prompt Chaining""?","Prompt chaining is a technique that guides a generative AI tool through a series of interconnected prompts, adding new layers of context or tasks with each step, allowing the tool to solve complex problems one step at a time."
+"Explain ""Chain-of-Thought (COT) prompting.""","Chain-of-Thought (COT) prompting asks the GenAI tool to explain its reasoning or describe step-by-step how it got to a specific result, helping users understand the tool's logic."
+"What are ""AI Agents"" in GenAI?","AI agents are customized versions of GenAI tools that can be transformed into your own team of experts, designed for different purposes such as simulating scenarios (Agent Sim) or providing expert feedback (Agent X)."
+"What is ""Prompt Versioning"" and why is it useful?","Prompt versioning is a way to keep track of the different versions of your prompts over time. It's useful for capturing your most effective prompts, tracking progress, and developing your GenAI prompting skills, potentially storing them in a prompt library."`;
+
+        // Parse the CSV data
+        const rows = csvData.split('\n').slice(1); // Split by new line and remove header
+        const flashcards = rows.map(row => {
+            // This regex handles quotes around fields that may contain commas
+            const columns = row.match(/(".*?"|[^",\n]+)(?=\s*,|\s*$)/g)
+                             .map(field => field.trim().replace(/^"|"$/g, ''));
+            return {
+                front: columns[0],
+                back: columns[1]
+            };
+        }).filter(card => card.front && card.back); // Ensure we don't have empty cards
+
+        let currentCardIndex = 0;
+        let isFlipped = false;
+
+        const flashcardContainer = document.getElementById('flashcard-container');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const flipBtn = document.getElementById('flip-btn');
+        const cardCounter = document.getElementById('card-counter');
+
+        function createCard(cardData) {
+            flashcardContainer.innerHTML = `
+                <div class="card-container w-full h-80 mx-auto">
+                    <div class="card ${isFlipped ? 'flipped' : ''} w-full h-full">
+                        <div class="card-inner">
+                            <div class="card-front bg-white flex justify-center items-center p-6 rounded-lg shadow-lg">
+                                <p class="text-2xl font-medium">${cardData.front}</p>
+                            </div>
+                            <div class="card-back bg-blue-100 flex justify-center items-center p-6 rounded-lg shadow-lg">
+                                <p class="text-xl">${cardData.back}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Add event listener to the new card element to flip it on click
+            const cardElement = flashcardContainer.querySelector('.card');
+            cardElement.addEventListener('click', () => {
+                isFlipped = !isFlipped;
+                cardElement.classList.toggle('flipped');
+            });
+
+            updateCardCounter();
+        }
+
+        function updateCardCounter() {
+            cardCounter.textContent = `Card ${currentCardIndex + 1} of ${flashcards.length}`;
+        }
+
+        function showCard(index) {
+            isFlipped = false; // Reset flip state when changing cards
+            createCard(flashcards[index]);
+        }
+
+        // Event Listeners
+        flipBtn.addEventListener('click', () => {
+            const card = document.querySelector('.card');
+            if (card) {
+                isFlipped = !isFlipped;
+                card.classList.toggle('flipped');
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            currentCardIndex = (currentCardIndex - 1 + flashcards.length) % flashcards.length;
+            showCard(currentCardIndex);
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentCardIndex = (currentCardIndex + 1) % flashcards.length;
+            showCard(currentCardIndex);
+        });
+
+        // Initial card load
+        if (flashcards.length > 0) {
+            showCard(currentCardIndex);
+        } else {
+            flashcardContainer.innerHTML = `<p class="text-center text-gray-600">No flashcards to display.</p>`;
+            cardCounter.textContent = 'Card 0 of 0';
+        }
+
+    </script>
+</body>
+</html>
