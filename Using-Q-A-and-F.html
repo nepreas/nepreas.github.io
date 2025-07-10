@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Module: Using Question, Answer, and Feedback</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles to enhance Tailwind */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Style for the accordion content panel when it's open */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
+            padding: 0 1.5rem;
+        }
+        /* Chevron icon transition */
+        .accordion-button svg {
+            transition: transform 0.3s ease-in-out;
+        }
+        .accordion-button.active svg {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Main Container -->
+    <div class="container mx-auto max-w-4xl p-4 sm:p-6 md:p-8">
+        
+        <!-- Header -->
+        <header class="text-center mb-10">
+            <h1 class="text-3xl sm:text-4xl font-bold text-blue-700 mb-2">🎓 Learning Module</h1>
+            <p class="text-xl sm:text-2xl text-gray-600">Using Question, Answer, and Feedback</p>
+        </header>
+
+        <!-- Module Goal & Objectives -->
+        <section class="mb-12 bg-white p-6 rounded-xl shadow-md border border-gray-200">
+            <h2 class="text-2xl font-bold text-blue-600 mb-4">Module Goal & Objectives</h2>
+            <p class="mb-4 text-gray-700"><strong>Goal:</strong> This module will help you move beyond simple information presentation to using questions, answers, and feedback to ensure genuine learning is happening.</p>
+            <p class="mb-3 font-semibold text-gray-800"><strong>Objectives:</strong> By the end of this module, you'll be able to:</p>
+            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                <li>Use question, answer, and feedback techniques effectively.</li>
+                <li>Discuss the two-way communication flow between student and instructor.</li>
+                <li>Describe the benefits of preparing written questions.</li>
+                <li>Identify the best times for student questions and when to postpone them.</li>
+                <li>Develop questions that avoid simple 'yes' or 'no' answers.</li>
+                <li>List reasons for instructors to ask questions and provide appropriate feedback.</li>
+                <li>Describe eight distinct types of questions.</li>
+            </ul>
+        </section>
+
+        <!-- Accordion Sections -->
+        <div class="space-y-4">
+
+            <!-- Section 1: Core Concepts -->
+            <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+                <button class="accordion-button w-full flex justify-between items-center p-6 text-left" data-target="content1">
+                    <h2 class="text-xl font-bold text-blue-600">Section 1: Understanding the Core Concepts</h2>
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="content1" class="accordion-content">
+                    <div class="pb-6 space-y-4">
+                        <p>This section introduces the foundational elements of effective teaching.</p>
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                            <h3 class="font-semibold text-lg text-blue-800 mb-2">🤔 What are Questions, Answers, and Feedback?</h3>
+                            <p><strong>Question:</strong> A request for information.</p>
+                            <p><strong>Answer:</strong> A spoken, written, or non-verbal response to a question.</p>
+                            <p><strong>Feedback:</strong> A reaction to a process or activity. It's a two-way street between instructors and students!</p>
+                        </div>
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                            <h3 class="font-semibold text-lg text-blue-800 mb-2">🚀 How to Adopt Effective Habits Early On</h3>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li><strong>Welcome inquiry:</strong> Start every class by asking for questions.</li>
+                                <li><strong>Be prepared:</strong> Write down questions for each major topic.</li>
+                                <li><strong>Encourage effort:</strong> Design questions that require critical thinking, not just a "yes" or "no."</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Student Questions -->
+            <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+                <button class="accordion-button w-full flex justify-between items-center p-6 text-left" data-target="content2">
+                    <h2 class="text-xl font-bold text-blue-600">Section 2: Questions Asked by the Student</h2>
+                     <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="content2" class="accordion-content">
+                     <div class="pb-6 space-y-4">
+                        <p>Learn how to manage student-initiated questions to maximize learning.</p>
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                            <h3 class="font-semibold text-lg text-blue-800 mb-2">⏱️ When should students ask questions?</h3>
+                            <p>Encourage students to ask questions as soon as they arise, especially if they are relevant to the current topic. If needed, you can coach the class to hold questions for specific times.</p>
+                        </div>
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                            <h3 class="font-semibold text-lg text-blue-800 mb-2">🤷 How should you handle student questions?</h3>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li><strong>Redirect:</strong> If time allows, redirect the question to the class to start a discussion.</li>
+                                <li><strong>Answer directly:</strong> If time is short, answer it yourself and move on.</li>
+                                <li><strong>Postpone (if necessary):</strong> It's okay to say, "We'll cover that later," but only if you genuinely will.</li>
+                                <li><strong>Observe feedback:</strong> Watch the student's cues to ensure your answer was understood.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Instructor Questions -->
+            <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+                <button class="accordion-button w-full flex justify-between items-center p-6 text-left" data-target="content3">
+                    <h2 class="text-xl font-bold text-blue-600">Section 3: Questions Asked by the Instructor</h2>
+                     <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="content3" class="accordion-content">
+                    <div class="pb-6 space-y-4">
+                        <p>Explore why and how you, as the instructor, should be asking questions.</p>
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                            <h3 class="font-semibold text-lg text-blue-800 mb-2">🎯 How should you manage student answers?</h3>
+                            <p><strong>For correct answers:</strong> Affirm the response and briefly explain <em>why</em> it's correct to reinforce the learning.</p>
+                            <p><strong>For partially correct answers:</strong> Acknowledge the correct parts first, then provide the complete, correct answer. You can also redirect to the class to build the full answer together.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Question Types -->
+            <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+                <button class="accordion-button w-full flex justify-between items-center p-6 text-left" data-target="content4">
+                    <h2 class="text-xl font-bold text-blue-600">Section 4: Question Types</h2>
+                     <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="content4" class="accordion-content">
+                    <div class="pb-6 space-y-4">
+                        <p>This section details eight distinct types of questions to achieve different learning goals.</p>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                                <thead class="bg-blue-600 text-white">
+                                    <tr>
+                                        <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Question Type</th>
+                                        <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-700">
+                                    <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                        <td class="py-3 px-4"><strong>Ask - Pause - Call</strong></td>
+                                        <td class="py-3 px-4">Ask a question, pause to scan the class, then call on a student.</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                        <td class="py-3 px-4"><strong>Bridge</strong></td>
+                                        <td class="py-3 px-4">Creates a logical connection between topics.</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                        <td class="py-3 px-4"><strong>Closed</strong></td>
+                                        <td class="py-3 px-4">A question with very few possible answers.</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                        <td class="py-3 px-4"><strong>Direct</strong></td>
+                                        <td class="py-3 px-4">A question aimed at a specific student.</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                        <td class="py-3 px-4"><strong>Open</strong></td>
+                                        <td class="py-3 px-4">A question with many possible answers to encourage broad thinking.</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                        <td class="py-3 px-4"><strong>Overhead</strong></td>
+                                        <td class="py-3 px-4">A question posed to the entire class.</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                        <td class="py-3 px-4"><strong>Relay</strong></td>
+                                        <td class="py-3 px-4">Redirecting a student's question to the rest of the class.</td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-100">
+                                        <td class="py-3 px-4"><strong>Rhetorical</strong></td>
+                                        <td class="py-3 px-4">A question asked to stimulate thought without needing a verbal answer.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conclusion -->
+        <section class="mt-12 bg-white p-6 rounded-xl shadow-md border border-gray-200">
+            <h2 class="text-2xl font-bold text-blue-600 mb-4">Conclusion</h2>
+            <p class="text-gray-700">Effective teaching thrives on the exchange of information. Make it a regular practice to ask questions, and create an environment where students feel comfortable doing the same. Remember, feedback is constant and flows in both directions!</p>
+        </section>
+
+    </div>
+
+    <script>
+        // JavaScript for accordion functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            const accordionButtons = document.querySelectorAll('.accordion-button');
+
+            accordionButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const contentId = button.getAttribute('data-target');
+                    const content = document.getElementById(contentId);
+                    
+                    // Toggle active class for button styling (e.g., rotating arrow)
+                    button.classList.toggle('active');
+
+                    // Toggle content visibility
+                    if (content.style.maxHeight) {
+                        // If it's open, close it
+                        content.style.maxHeight = null;
+                        content.style.padding = '0 1.5rem'; // Collapse padding
+                    } else {
+                        // If it's closed, open it
+                        // Set max-height to its scroll height for a smooth transition
+                        content.style.maxHeight = content.scrollHeight + "px";
+                        content.style.padding = '0 1.5rem 1.5rem 1.5rem'; // Expand padding
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
