@@ -1,0 +1,519 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Section 2 - Driving Safely</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Using Inter as the default font */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom style for correct and incorrect answers */
+        .correct {
+            background-color: #d1fae5; /* A light green */
+            border-left: 5px solid #10b981; /* A darker green */
+        }
+        .incorrect {
+            background-color: #fee2e2; /* A light red */
+            border-left: 5px solid #ef4444; /* A darker red */
+        }
+        .correct-answer-text {
+            color: #10b981;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-4xl">
+        <!-- Header Section -->
+        <header class="bg-white shadow-md rounded-lg p-6 mb-8">
+            <h1 class="text-2xl sm:text-3xl font-bold text-center text-gray-900">Section 2 - Driving Safely</h1>
+            <p class="text-center text-gray-600 mt-2">Test your knowledge with these 30 multiple-choice questions.</p>
+        </header>
+
+        <!-- Quiz Container -->
+        <main id="quiz-container" class="space-y-6">
+            <!-- Questions will be dynamically inserted here by JavaScript -->
+        </main>
+
+        <!-- Results and Actions Section -->
+        <div id="results-container" class="text-center my-8 p-6 bg-white shadow-md rounded-lg" style="display: none;">
+             <h2 class="text-2xl font-bold mb-2">Your Score:</h2>
+             <p id="score" class="text-3xl font-bold text-blue-600 mb-4"></p>
+             <p id="feedback" class="text-lg text-gray-700"></p>
+        </div>
+
+        <div class="text-center mt-8">
+            <button id="submit-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300">
+                Check Answers
+            </button>
+            <button id="retry-btn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-gray-300" style="display: none;">
+                Try Again
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- DATA: Quiz Questions and Answers ---
+        // An array of objects. Each object represents a single question.
+        const quizData = [
+            {
+                question: "What is the most important reason for conducting a vehicle inspection before driving?",
+                options: [
+                    "To save time and money on potential breakdowns.",
+                    "To comply with federal and state laws.",
+                    "To ensure safety for yourself and other road users.",
+                    "To avoid having your vehicle put \"out of service\" by inspectors."
+                ],
+                answer: 2 // Index of the correct option (0-based)
+            },
+            {
+                question: "According to the manual, what is the minimum tread depth required for front tires on a commercial vehicle?",
+                options: [
+                    "2/32 inch",
+                    "3/32 inch",
+                    "1/16 inch",
+                    "4/32 inch"
+                ],
+                answer: 3
+            },
+            {
+                question: "Which of the following indicates a suspension system defect that could put a vehicle \"out of service\"?",
+                options: [
+                    "Leaking shock absorbers.",
+                    "Cracked or broken spring hangers.",
+                    "Any loose or missing frame members.",
+                    "One-fourth or more missing leaves in any leaf spring."
+                ],
+                answer: 3
+            },
+            {
+                question: "During the seven-step inspection method, when should you check the engine compartment fluids and belts?",
+                options: [
+                    "After starting the engine.",
+                    "During the walk-around inspection.",
+                    "Before starting the engine, in Step 2: Check Engine Compartment.",
+                    "At the end of the trip during the after-trip inspection."
+                ],
+                answer: 2
+            },
+            {
+                question: "When checking your vehicle's air pressure gauges after starting the engine, what is the typical range pressure should build from within 3 minutes?",
+                options: [
+                    "20 to 45 psi",
+                    "85 to 100 psi",
+                    "120 to 140 psi",
+                    "50 to 90 psi"
+                ],
+                answer: 3
+            },
+            {
+                question: "When should a driver dim their headlights to avoid blinding other drivers?",
+                options: [
+                    "Only when an oncoming vehicle flashes its high beams.",
+                    "Within 250 feet of an oncoming vehicle.",
+                    "Within 500 feet of an oncoming vehicle and when following another vehicle within 500 feet.",
+                    "Only when driving on unlit rural roads."
+                ],
+                answer: 2
+            },
+            {
+                question: "When performing a walk-around inspection, what should you test rust-streaked lug nuts for?",
+                options: [
+                    "Over-tightening.",
+                    "Looseness.",
+                    "Proper lubrication.",
+                    "Missing parts."
+                ],
+                answer: 1
+            },
+            {
+                question: "What is the maximum steering wheel play that can make it hard to steer a commercial vehicle?",
+                options: [
+                    "Approximately 1 inch movement at the rim of a 20-inch steering wheel.",
+                    "Less than 5 degrees.",
+                    "More than 10 degrees (approximately 2 inches movement at the rim of a 20-inch steering wheel).",
+                    "Any amount of steering wheel play."
+                ],
+                answer: 2
+            },
+            {
+                question: "When parking at the side of the road, within how many minutes must you put out your emergency warning devices?",
+                options: [
+                    "Within 5 minutes.",
+                    "Within 10 minutes.",
+                    "Within 15 minutes.",
+                    "Only if it's dark or foggy."
+                ],
+                answer: 1
+            },
+            {
+                question: "When driving in very hot weather, how often should you inspect your tires?",
+                options: [
+                    "Every four hours or every 200 miles.",
+                    "Only during your pre-trip inspection.",
+                    "Every two hours or every 100 miles.",
+                    "When you hear a strange noise or feel a vibration."
+                ],
+                answer: 2
+            },
+            {
+                question: "What is the total minimum stopping distance for a commercial vehicle traveling at 55 mph, under ideal conditions?",
+                options: [
+                    "Approximately 216 feet.",
+                    "Approximately 300 feet.",
+                    "Over 400 feet.",
+                    "Approximately 61 feet."
+                ],
+                answer: 2
+            },
+            {
+                question: "When should a driver turn off the retarder?",
+                options: [
+                    "When going downhill to save the service brakes.",
+                    "When driving on a clear, dry highway.",
+                    "Whenever the road is wet, icy, or snow covered.",
+                    "Only when approaching a residential area due to noise."
+                ],
+                answer: 2
+            },
+            {
+                question: "You are approaching a railroad-highway crossing that has a white stop line painted on the pavement. Where must the front of your vehicle remain while stopped at the crossing?",
+                options: [
+                    "No closer than 50 feet from the nearest rail.",
+                    "At least 15 feet from the nearest rail.",
+                    "Behind this line.",
+                    "Before the cross-buck sign."
+                ],
+                answer: 2
+            },
+            {
+                question: "What is the first part of the brain affected by drinking alcohol?",
+                options: [
+                    "Muscle coordination.",
+                    "Reaction time.",
+                    "Judgment and self-control.",
+                    "Vision."
+                ],
+                answer: 2
+            },
+            {
+                question: "What are the three basic types of emergency equipment that commercial vehicles must be equipped with?",
+                options: [
+                    "First-aid kit, flashlight, and spare tire.",
+                    "Fire extinguisher, flares, and a warning flag.",
+                    "Fire extinguisher(s), spare electrical fuses (unless equipped with circuit breakers), and warning devices for parked vehicles.",
+                    "A hammer, a wrench, and a reflective vest."
+                ],
+                answer: 2
+            },
+            {
+                question: "Which of the following statements is TRUE regarding convex mirrors on large vehicles?",
+                options: [
+                    "They show objects closer than they really are.",
+                    "Everything appears smaller and farther away than it really is.",
+                    "They provide a narrower field of vision than flat mirrors.",
+                    "They should be used as the primary source for judging distance."
+                ],
+                answer: 1
+            },
+            {
+                question: "If you are applying the brakes on a slippery surface and your drive wheels begin to skid due to over-acceleration, what should you do?",
+                options: [
+                    "Apply the brakes harder.",
+                    "Turn the steering wheel sharply in the direction of the skid.",
+                    "Take your foot off the accelerator and push in the clutch (if manual transmission).",
+                    "Speed up to regain traction."
+                ],
+                answer: 2
+            },
+            {
+                question: "What does \"rearward amplification\" refer to in combination vehicles?",
+                options: [
+                    "The increased braking power due to multiple axles.",
+                    "The ability to see farther behind with multiple trailers.",
+                    "The \"crack-the-whip\" effect that can cause trailers to overturn.",
+                    "The magnification of sounds from the rear of the vehicle."
+                ],
+                answer: 2
+            },
+            {
+                question: "When driving in fog, what is the best advice given in the manual?",
+                options: [
+                    "Use high-beam headlights to see farther.",
+                    "Drive faster to get through the fog quickly.",
+                    "Pull off the road into a rest area or truck stop until visibility is better.",
+                    "Follow another vehicle's taillights closely."
+                ],
+                answer: 2
+            },
+            {
+                question: "When driving a 40-foot vehicle at 35 mph, how many seconds of following distance should you allow?",
+                options: [
+                    "3 seconds",
+                    "4 seconds",
+                    "5 seconds",
+                    "6 seconds"
+                ],
+                answer: 1
+            },
+            {
+                question: "What action should you take if your vehicle hydroplanes?",
+                options: [
+                    "Apply firm pressure to the brakes.",
+                    "Turn the steering wheel quickly in the direction of the skid.",
+                    "Release the accelerator and push in the clutch.",
+                    "Speed up to break through the water."
+                ],
+                answer: 2
+            },
+            {
+                question: "Which of the following is TRUE regarding automatic slack adjusters on air brakes?",
+                options: [
+                    "They should be manually adjusted routinely.",
+                    "They eliminate the need for any brake adjustment checks.",
+                    "Manual adjustment of an automatic adjuster to bring brake stroke within limits is generally masking a mechanical problem.",
+                    "They prevent brake fade on long downgrades."
+                ],
+                answer: 2
+            },
+            {
+                question: "When should a driver NOT open the hood during an engine fire?",
+                options: [
+                    "If the fire is small and easily extinguishable.",
+                    "If the fire extinguisher is a B:C type.",
+                    "If they are carrying hazardous materials.",
+                    "If you can avoid it, to prevent supplying the fire with oxygen."
+                ],
+                answer: 3
+            },
+            {
+                question: "What is the only safe cure for fatigue while driving?",
+                options: [
+                    "Drinking coffee or energy drinks.",
+                    "Opening the window for fresh air.",
+                    "Playing loud music.",
+                    "Getting off the road and getting some sleep."
+                ],
+                answer: 3
+            },
+            {
+                question: "When backing a commercial vehicle with a trailer, which direction should you turn the steering wheel to make the trailer turn to the right?",
+                options: [
+                    "To the right.",
+                    "To the left.",
+                    "Keep it straight.",
+                    "It depends on the length of the trailer."
+                ],
+                answer: 1
+            },
+            {
+                question: "If a front tire fails while driving, what is your immediate response?",
+                options: [
+                    "Immediately apply the brakes hard.",
+                    "Hold the steering wheel firmly with both hands.",
+                    "Turn off the engine.",
+                    "Look in the mirrors to see which tire it was."
+                ],
+                answer: 1
+            },
+            {
+                question: "What is \"black ice\"?",
+                options: [
+                    "Ice that has turned dark from dirt and grime.",
+                    "A thick layer of frozen water on the road.",
+                    "A thin layer that is clear enough that you can see the road underneath it, making the road look wet.",
+                    "Ice that forms only in shaded areas."
+                ],
+                answer: 2
+            },
+            {
+                question: "Which of the following is prohibited when transporting flammable liquids (Class 3) or flammable gases (Division 2.1)?",
+                options: [
+                    "Using reflective triangles for a breakdown.",
+                    "Using burning signals like flares or fusees.",
+                    "Driving at night.",
+                    "Stopping for fuel."
+                ],
+                answer: 1
+            },
+            {
+                question: "According to federal regulations, the aggregate working load limit of any securement system used to secure cargo against movement must be at least how many times the weight of the article or group of articles?",
+                options: [
+                    "One-third.",
+                    "One-fourth.",
+                    "One-half.",
+                    "Two times."
+                ],
+                answer: 2
+            },
+            {
+                question: "If your vehicle is equipped with Antilock Braking Systems (ABS), how should you generally brake during normal operation?",
+                options: [
+                    "Pump the brakes rapidly.",
+                    "Apply maximum brake pressure at all times.",
+                    "Brake as you always have, using only the necessary force to stop safely and stay in control.",
+                    "ABS will brake for you, so you don't need to apply the pedal as hard."
+                ],
+                answer: 2
+            }
+        ];
+
+        // --- DOM Elements ---
+        // Getting references to the HTML elements we'll need to interact with.
+        const quizContainer = document.getElementById('quiz-container');
+        const submitButton = document.getElementById('submit-btn');
+        const retryButton = document.getElementById('retry-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreElement = document.getElementById('score');
+        const feedbackElement = document.getElementById('feedback');
+
+        // --- FUNCTIONS ---
+
+        /**
+         * Function to load and display the quiz questions on the page.
+         */
+        function loadQuiz() {
+            // Clear any existing content
+            quizContainer.innerHTML = '';
+            resultsContainer.style.display = 'none';
+            submitButton.style.display = 'inline-block';
+            retryButton.style.display = 'none';
+
+            // Loop through each question in the quizData array
+            quizData.forEach((currentQuestion, questionIndex) => {
+                // Create a container for the question
+                const questionElement = document.createElement('div');
+                questionElement.classList.add('bg-white', 'p-6', 'rounded-lg', 'shadow-md');
+                questionElement.id = `question-${questionIndex}`;
+
+                // Add the question text
+                const questionText = document.createElement('p');
+                questionText.classList.add('font-semibold', 'text-lg', 'mb-4');
+                questionText.innerText = `${questionIndex + 1}. ${currentQuestion.question}`;
+                questionElement.appendChild(questionText);
+
+                // Create a container for the options
+                const optionsElement = document.createElement('div');
+                optionsElement.classList.add('space-y-3');
+
+                // Loop through the options for the current question
+                currentQuestion.options.forEach((option, optionIndex) => {
+                    // Create a label for each radio button option
+                    const label = document.createElement('label');
+                    label.classList.add('block', 'p-4', 'rounded-md', 'border', 'border-gray-200', 'cursor-pointer', 'hover:bg-gray-50', 'transition-colors');
+                    label.id = `q${questionIndex}-option${optionIndex}-label`;
+
+                    // Create the radio button input
+                    const radio = document.createElement('input');
+                    radio.type = 'radio';
+                    radio.name = `question${questionIndex}`;
+                    radio.value = optionIndex;
+                    radio.classList.add('mr-3', 'form-radio', 'text-blue-600');
+
+                    // Add the radio button and option text to the label
+                    label.appendChild(radio);
+                    label.append(option); // Append the text content of the option
+                    optionsElement.appendChild(label);
+                });
+
+                questionElement.appendChild(optionsElement);
+                quizContainer.appendChild(questionElement);
+            });
+        }
+
+        /**
+         * Function to check the answers, calculate the score, and provide feedback.
+         */
+        function checkAnswers() {
+            let score = 0;
+            // Loop through each question to check the selected answer
+            quizData.forEach((currentQuestion, questionIndex) => {
+                // Find the selected radio button for the current question
+                const selectedOption = document.querySelector(`input[name="question${questionIndex}"]:checked`);
+                const questionElement = document.getElementById(`question-${questionIndex}`);
+
+                // Disable all radio buttons for this question
+                const allRadios = document.querySelectorAll(`input[name="question${questionIndex}"]`);
+                allRadios.forEach(radio => radio.disabled = true);
+
+                if (selectedOption) {
+                    const userAnswer = parseInt(selectedOption.value);
+                    const correctOptionLabel = document.getElementById(`q${questionIndex}-option${currentQuestion.answer}-label`);
+                    
+                    if (userAnswer === currentQuestion.answer) {
+                        // If the answer is correct
+                        score++;
+                        // Style the selected (and correct) answer label
+                        selectedOption.parentElement.classList.add('correct');
+                    } else {
+                        // If the answer is incorrect
+                        // Style the selected (incorrect) answer label
+                        selectedOption.parentElement.classList.add('incorrect');
+                        // Also highlight the correct answer
+                        correctOptionLabel.classList.add('correct');
+                    }
+                } else {
+                    // If no answer was selected, highlight the correct one
+                    const correctOptionLabel = document.getElementById(`q${questionIndex}-option${currentQuestion.answer}-label`);
+                    correctOptionLabel.classList.add('correct');
+                    const correctText = document.createElement('span');
+                    correctText.innerHTML = ' &larr; Correct Answer';
+                    correctText.classList.add('correct-answer-text', 'ml-2');
+                    correctOptionLabel.appendChild(correctText);
+                }
+            });
+
+            // Display the final score
+            const percentage = Math.round((score / quizData.length) * 100);
+            scoreElement.textContent = `${score} / ${quizData.length} (${percentage}%)`;
+            
+            // Provide feedback based on the score
+            if (percentage >= 80) {
+                feedbackElement.textContent = "Excellent work! You have a strong understanding of driving safety.";
+                scoreElement.className = 'text-3xl font-bold text-green-600 mb-4';
+            } else if (percentage >= 60) {
+                feedbackElement.textContent = "Good job! A little more review could be helpful.";
+                 scoreElement.className = 'text-3xl font-bold text-yellow-600 mb-4';
+            } else {
+                feedbackElement.textContent = "It's a good start. Keep studying the manual to improve your score.";
+                scoreElement.className = 'text-3xl font-bold text-red-600 mb-4';
+            }
+
+
+            // Show the results and the retry button
+            resultsContainer.style.display = 'block';
+            submitButton.style.display = 'none';
+            retryButton.style.display = 'inline-block';
+            resultsContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- EVENT LISTENERS ---
+
+        // Event listener for the "Check Answers" button
+        submitButton.addEventListener('click', checkAnswers);
+
+        // Event listener for the "Try Again" button, which reloads the quiz
+        retryButton.addEventListener('click', () => {
+             loadQuiz();
+             window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // --- INITIALIZATION ---
+        // Load the quiz when the page is first opened.
+        // The 'DOMContentLoaded' event ensures the script runs after the entire HTML document has been loaded.
+        document.addEventListener('DOMContentLoaded', loadQuiz);
+
+    </script>
+</body>
+</html>

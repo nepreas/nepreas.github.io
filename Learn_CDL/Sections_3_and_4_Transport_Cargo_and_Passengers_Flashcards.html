@@ -1,0 +1,252 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sections 3 and 4 - Transport Cargo and Passengers</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Styles for the 3D flashcard effect */
+        .card-container {
+            perspective: 1000px;
+        }
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+        .card.is-flipped {
+            transform: rotateY(180deg);
+        }
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden; /* Safari */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .card-front {
+            background-color: white;
+            border: 1px solid #e5e7eb;
+        }
+        .card-back {
+            background-color: #f3f4f6; /* gray-100 */
+            border: 1px solid #e5e7eb;
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-2xl">
+        <header class="text-center mb-6">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">Sections 3 and 4</h1>
+            <p class="text-lg sm:text-xl text-indigo-600 font-semibold">Transport Cargo and Passengers</p>
+        </header>
+
+        <!-- Flashcard Container -->
+        <div id="flashcard-container" class="card-container h-80 mb-6 cursor-pointer" title="Click to flip">
+            <div id="flashcard" class="card">
+                <div class="card-face card-front">
+                    <p id="card-front-text" class="text-xl md:text-2xl text-center"></p>
+                </div>
+                <div class="card-face card-back">
+                    <p id="card-back-text" class="text-base md:text-lg text-center"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Controls -->
+        <div class="flex items-center justify-between mb-4">
+            <button id="prev-btn" class="bg-white border border-gray-300 text-gray-700 font-bold py-2 px-4 rounded-lg shadow-sm hover:bg-gray-100 transition-colors">
+                &larr; Previous
+            </button>
+            <div id="card-counter" class="text-gray-600 font-medium"></div>
+            <button id="next-btn" class="bg-white border border-gray-300 text-gray-700 font-bold py-2 px-4 rounded-lg shadow-sm hover:bg-gray-100 transition-colors">
+                Next &rarr;
+            </button>
+        </div>
+
+        <!-- Shuffle Button -->
+        <div class="text-center">
+             <button id="shuffle-btn" class="bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-transform transform hover:scale-105">
+                Shuffle Cards
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA ---
+        // The raw CSV data provided in the document.
+        const csvData = `
+"Front","Back"
+"What are the four main responsibilities of a driver when transporting cargo?","Inspecting your cargo; recognizing overloads and poorly balanced weight; knowing your cargo is properly secured and does not obscure your view ahead or to the sides; and knowing your cargo does not restrict your access to emergency equipment."
+"How often should cargo and securing devices be inspected after beginning a trip?","Within the first 50 miles after beginning a trip, then every 3 hours or 150 miles (whichever comes first), and after every break you take during driving."
+"Define Gross Vehicle Weight Rating (GVWR).","The value specified by the manufacturer as the loaded weight of a single vehicle."
+"Define Gross Combination Weight Rating (GCWR).","The value specified by the manufacturer of the power unit, if displayed on the Federal Motor Vehicle Safety Standard (FMVSS) certification label; or the sum of the gross vehicle weight ratings (GVWRs) or the gross vehicle weights (GVWs) of the power unit and the towed unit(s), or any combination thereof, that produces the highest value."
+"What is 'Axle Weight' in terms of cargo transportation?","The weight transmitted to the ground by one axle or one set of axles."
+"What are some potential negative effects of an overloaded commercial vehicle?","Overloading can have bad effects on steering, braking, and speed control. Overloaded trucks may go very slowly on upgrades, gain too much speed on downgrades, and have increased stopping distances, potentially leading to brake failure."
+"How does a high center of gravity affect a vehicle's handling, especially with cargo?","A high center of gravity (cargo piled up high or heavy cargo on top) makes the vehicle top-heavy and more likely to tip over, especially in curves or if you have to swerve to avoid a hazard."
+"What is the purpose of 'blocking' cargo when securing it?","Blocking is used in the front, back, and/or sides of a piece of cargo to keep it from sliding. It is shaped to fit snugly against cargo and is secured to the cargo deck."
+"What is the federal regulation requirement for the aggregate working load limit of any securement system used to secure an article or group of articles against movement?","It must be at least one-half times the weight of the article or group of articles."
+"What is the minimum number of tie-downs required for any size of cargo on a flatbed, regardless of its length?","At least two tie-downs are required for any cargo."
+"What is the purpose of 'header boards' on a truck?","Header boards ('headache racks') protect you from your cargo in case of a crash or emergency stop by blocking the forward movement of any cargo."
+"What must a driver check regarding 'sealed and containerized loads' since they cannot inspect the cargo itself?","They should check that they don't exceed gross weight and axle weight limits."
+"Why do dry bulk tanks and hanging meat loads require special care when driving?","Dry bulk tanks have a high center of gravity and the load can shift. Hanging meat is a very unstable load with a high center of gravity. Both increase the risk of rollover and require particular caution on curves."
+"What special considerations are necessary when transporting livestock?","Livestock can move around in a trailer, causing unsafe handling. With less than a full load, false bulkheads should be used to keep livestock bunched. Even when bunched, special care is necessary because livestock can lean on curves, shifting the center of gravity and increasing rollover likelihood."
+"When is a Commercial Driver License (CDL) required for a bus driver?","A CDL is required if they drive a vehicle designed to seat 16 or more persons, including the driver."
+"What specific type of tire is prohibited on the front wheels of a bus?","Recapped or re-grooved tires are prohibited on the front wheels of a bus."
+"What three kinds of emergency equipment are required by law on a bus?","A fire extinguisher, emergency reflectors (three reflective triangles or at least 6 fusees or 3 liquid burning flares), and spare electrical fuses (unless equipped with circuit breakers)."
+"When checking the interior of a bus, what critical condition must aisles and stairwells be in?","Aisles and stairwells should always be clear."
+"What is the rule regarding driving a bus with an open emergency exit door or window?","Never drive with an open emergency exit door or window."
+"What are some examples of hazardous materials that buses must never carry?","Buses must never carry Division 2.3 poison gas, liquid Class 6 poison, tear gas, irritating material; more than 100 pounds of solid Class 6 poisons; explosives or labeled radioactive materials in the space occupied by people (except small arms ammunition); or more than 500 pounds total of allowed hazardous materials, and no more than 100 pounds of any one class."
+        `;
+
+        // --- STATE VARIABLES ---
+        // These variables keep track of the application's current state.
+        let cards = []; // This will hold our parsed flashcard objects.
+        let currentIndex = 0; // The index of the card currently being viewed.
+
+        // --- DOM ELEMENT REFERENCES ---
+        // Getting references to the HTML elements we'll need to interact with.
+        const flashcardContainer = document.getElementById('flashcard-container');
+        const flashcard = document.getElementById('flashcard');
+        const cardFrontText = document.getElementById('card-front-text');
+        const cardBackText = document.getElementById('card-back-text');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const shuffleBtn = document.getElementById('shuffle-btn');
+        const cardCounter = document.getElementById('card-counter');
+
+        // --- FUNCTIONS ---
+
+        /**
+         * Parses the raw CSV string into an array of objects.
+         * Each object will have a 'front' and 'back' property.
+         * @param {string} csv - The raw CSV data.
+         */
+        function parseCSV(csv) {
+            // Trim whitespace, split into lines, and filter out any empty lines.
+            const lines = csv.trim().split('\n').filter(line => line.trim() !== "");
+            // Skip the header row by starting from the second line (index 1).
+            const dataLines = lines.slice(1);
+
+            cards = dataLines.map(line => {
+                // This regex helps split the CSV line by commas that are between quotes.
+                // It's a bit more robust than a simple split(',').
+                const parts = line.match(/"(.*?)"/g).map(part => part.slice(1, -1));
+                return {
+                    front: parts[0],
+                    back: parts[1]
+                };
+            });
+        }
+
+        /**
+         * Updates the DOM to display the current card.
+         */
+        function displayCard() {
+            if (cards.length === 0) return; // Don't do anything if there are no cards.
+            
+            // Get the current card data from our array.
+            const currentCard = cards[currentIndex];
+            
+            // Update the text content of the front and back of the card.
+            cardFrontText.textContent = currentCard.front;
+            cardBackText.textContent = currentCard.back;
+            
+            // Update the counter text (e.g., "1 / 20").
+            cardCounter.textContent = `${currentIndex + 1} / ${cards.length}`;
+            
+            // Ensure the card is flipped back to the front when a new card is shown.
+            flashcard.classList.remove('is-flipped');
+        }
+
+        /**
+         * Toggles the flip animation on the card.
+         */
+        function flipCard() {
+            flashcard.classList.toggle('is-flipped');
+        }
+
+        /**
+         * Navigates to the next card in the deck.
+         */
+        function nextCard() {
+            // Increment the index. The modulo operator (%) makes it loop back to 0
+            // when it reaches the end of the array.
+            currentIndex = (currentIndex + 1) % cards.length;
+            displayCard();
+        }
+
+        /**
+         * Navigates to the previous card in the deck.
+         */
+        function prevCard() {
+            // Decrement the index. If it goes below 0, loop to the end of the array.
+            currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+            displayCard();
+        }
+
+        /**
+         * Shuffles the cards array into a random order.
+         * Uses the Fisher-Yates (aka Knuth) shuffle algorithm for an unbiased shuffle.
+         */
+        function shuffleCards() {
+            for (let i = cards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [cards[i], cards[j]] = [cards[j], cards[i]]; // Swap elements
+            }
+            // Reset to the first card and display it.
+            currentIndex = 0;
+            displayCard();
+        }
+
+        // --- INITIALIZATION & EVENT LISTENERS ---
+
+        /**
+         * Sets up the application when the page is loaded.
+         */
+        function initializeApp() {
+            parseCSV(csvData);
+            displayCard();
+
+            // Add click listeners to our interactive elements.
+            flashcardContainer.addEventListener('click', flipCard);
+            nextBtn.addEventListener('click', nextCard);
+            prevBtn.addEventListener('click', prevCard);
+            shuffleBtn.addEventListener('click', shuffleCards);
+
+            // Add keyboard navigation for convenience.
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'ArrowRight') {
+                    nextCard();
+                } else if (event.key === 'ArrowLeft') {
+                    prevCard();
+                } else if (event.key === ' ') {
+                    // Prevent the space bar from scrolling the page.
+                    event.preventDefault(); 
+                    flipCard();
+                }
+            });
+        }
+
+        // Run the initialization function once the DOM is fully loaded.
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+    </script>
+</body>
+</html>

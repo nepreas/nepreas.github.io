@@ -1,0 +1,259 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Section 2 - Driving Safely Flashcards</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Feather Icons for UI elements -->
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* --- Flashcard Flip Animation --- */
+        /* The container that provides perspective for the 3D effect */
+        .flashcard-container {
+            perspective: 1000px;
+        }
+        /* The inner card that will be flipped */
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        /* When the container has the .is-flipped class, rotate the inner card */
+        .flashcard-container.is-flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+        /* The front and back faces of the card */
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; /* Safari */
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+        }
+        /* Style for the back of the card, initially rotated */
+        .flashcard-back {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-2xl">
+        <!-- Header -->
+        <header class="text-center mb-6">
+            <h1 class="text-3xl font-bold text-gray-900">Section 2 - Driving Safely</h1>
+            <p class="text-gray-600 mt-1">Use the flashcards to test your knowledge.</p>
+        </header>
+
+        <!-- Flashcard Component -->
+        <div id="flashcard-container" class="flashcard-container w-full h-80 mb-6 cursor-pointer">
+            <div id="flashcard-inner" class="flashcard-inner shadow-xl rounded-lg">
+                <!-- Front of the card -->
+                <div id="flashcard-front" class="flashcard-front bg-white rounded-lg">
+                    <p class="text-2xl font-semibold"></p>
+                </div>
+                <!-- Back of the card -->
+                <div id="flashcard-back" class="flashcard-back bg-blue-100 text-blue-800 rounded-lg">
+                    <p class="text-xl"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Controls -->
+        <div class="flex items-center justify-center space-x-4">
+            <!-- Previous Button -->
+            <button id="prev-btn" class="p-4 bg-white rounded-full shadow-md hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <i data-feather="arrow-left"></i>
+            </button>
+
+            <!-- Card Counter -->
+            <div id="card-counter" class="text-lg font-medium text-gray-700 w-24 text-center">
+                1 / 50
+            </div>
+
+            <!-- Next Button -->
+            <button id="next-btn" class="p-4 bg-white rounded-full shadow-md hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <i data-feather="arrow-right"></i>
+            </button>
+        </div>
+        
+        <div class="text-center text-gray-500 mt-4 text-sm">
+            Click the card to flip it. Use arrow keys to navigate.
+        </div>
+    </div>
+
+    <script>
+        // --- DATA: Flashcard Content ---
+        // An array of objects, where each object represents a flashcard.
+        const flashcardData = [
+            { front: "What is the most important reason for doing a vehicle inspection?", back: "Safety for yourself and other road users." },
+            { front: "What can happen if federal or state inspectors judge your vehicle unsafe?", back: "It will be put 'out of service' until fixed." },
+            { front: "What types of vehicle inspections are mentioned?", back: "Vehicle inspection, during a trip, and after-trip inspection and report." },
+            { front: "What should you check during a trip?", back: "Gauges, use your senses (look, listen, smell, feel), and critical items like tires, wheels, brakes, lights, and cargo securement." },
+            { front: "What is the minimum tread depth for front tires?", back: "4/32 inch in every major groove." },
+            { front: "What is the minimum tread depth for other tires (not front)?", back: "2/32 inch." },
+            { front: "What type of tires are prohibited on the front wheels of a bus?", back: "Re-grooved, recapped, or retreaded tires." },
+            { front: "What does rust around wheel nuts indicate?", back: "The nuts may be loose." },
+            { front: "Are welding repairs on wheels or rims safe?", back: "No, they are not safe." },
+            { front: "What are some signs of bad brake drums or shoes?", back: "Cracked drums, oil/grease/brake fluid on shoes/pads, or worn/missing/broken shoes." },
+            { front: "What is considered excessive steering wheel play?", back: "More than 10 degrees (approximately 2 inches movement at the rim of a 20-inch steering wheel)." },
+            { front: "What indicates a suspension system is out of service?", back: "One-fourth or more missing leaves in any leaf spring." },
+            { front: "What are some exhaust system defects to look for?", back: "Loose, broken, or missing pipes/mufflers/tailpipes/stacks; loose/broken/missing mounting brackets; parts rubbing against fuel system/tires/moving parts; or leaking parts." },
+            { front: "What three kinds of emergency equipment must you have?", back: "Fire extinguisher(s), spare electrical fuses (unless equipped with circuit breakers), and warning devices for parked vehicles (three reflective triangles or 6 fusees or 3 liquid burning flares)." },
+            { front: "What should you review in Step 1 of the vehicle inspection?", back: "The last vehicle inspection report." },
+            { front: "What should engine oil pressure do after starting the engine?", back: "Come up to normal within seconds." },
+            { front: "How quickly should air pressure build up in an air brake system?", back: "From 50 to 90 psi within 3 minutes." },
+            { front: "When should ABS indicator lights turn off after starting the engine?", back: "They should come on and then turn off." },
+            { front: "How do you test hydraulic brakes for leaks?", back: "Pump the brake pedal three times, then apply firm pressure for five seconds; the pedal should not move." },
+            { front: "Why should you put the starter switch key in your pocket during the vehicle inspection?", back: "To prevent someone else from moving the truck while you are inspecting it." },
+            { front: "How do you test the parking brake?", back: "Set the parking brake, put the vehicle in a low gear, and gently pull forward against the brake to ensure it holds." },
+            { front: "How often must drivers of trucks and truck tractors transporting cargo inspect the securement of the cargo?", back: "Within the first 50 miles of a trip and every 150 miles or every three hours (whichever comes first) thereafter." },
+            { front: "When starting a manual transmission vehicle on a hill, how can you prevent rolling back?", back: "Partly engage the clutch before taking your foot off the brake, or use the parking brake, or apply the trailer brake hand valve on a tractor-trailer." },
+            { front: "Why is rough acceleration undesirable?", back: "It can cause mechanical damage and, when pulling a trailer, damage the coupling." },
+            { front: "Why should you avoid backing whenever possible?", back: "Backing is always dangerous because you cannot see everything behind your vehicle." },
+            { front: "When backing a vehicle, why is it better to back toward the driver's side?", back: "So you can see better by looking out the side window." },
+            { front: "What is the most important signal to agree on with a helper when backing?", back: "A signal for 'stop'." },
+            { front: "What is double clutching primarily used for in heavy vehicles?", back: "To change gears in unsynchronized manual transmissions." },
+            { front: "What are two ways of knowing when to shift up in a manual transmission?", back: "Using engine speed (rpm) or road speed (mph)." },
+            { front: "When should you downshift before going down a hill?", back: "Before starting down a hill to control speed without relying heavily on brakes." },
+            { front: "When should you turn off a retarder?", back: "Whenever the road is wet, icy, or snow covered, as it may cause the drive wheels to skid." },
+            { front: "How far ahead should most good drivers look?", back: "At least 12 to 15 seconds ahead." },
+            { front: "What are 'blind spots' in relation to mirrors?", back: "Areas that your mirrors cannot show you." },
+            { front: "What is the main characteristic of curved (convex) mirrors?", back: "Everything appears smaller and farther away than it really is." },
+            { front: "What are the three good rules for using turn signals?", back: "Signal early, signal continuously, and cancel your signal." },
+            { front: "When should you warn drivers behind you by flashing your brake lights?", back: "When you need to slow down due to a hazard ahead, tight turns, or stopping on the road." },
+            { front: "When must you put out emergency warning devices if you stop on a road or shoulder?", back: "Within ten minutes." },
+            { front: "Where should you place warning devices on a one-way or divided highway?", back: "10 feet, 100 feet, and 200 feet toward approaching traffic." },
+            { front: "Where should you place warning devices on a two-lane road or undivided highway?", back: "Within 10 feet of front/rear corners, and 100 feet behind and ahead of the vehicle." },
+            { front: "What are the three factors that make up total stopping distance?", back: "Perception distance, reaction distance, and braking distance." },
+            { front: "How much does stopping distance increase if you double your speed?", back: "The braking distance is 4 times longer, and impact is 4 times greater." },
+            { front: "Do empty trucks have better braking than loaded trucks? Why or why not?", back: "No, empty trucks require greater stopping distances because an empty vehicle has less traction." },
+            { front: "How should you adjust your speed on a wet road?", back: "Reduce speed by about one-third (e.g., from 55 to about 35 mph)." },
+            { front: "What is 'black ice'?", back: "A thin layer of clear ice that makes the road look wet." },
+            { front: "What is hydroplaning?", back: "When tires lose contact with the road due to water or slush, losing traction and steering/braking ability." },
+            { front: "How should you handle braking in a curve?", back: "Slow to a safe speed before entering the curve; braking in a curve is dangerous." },
+            { front: "What is the principal way of controlling your speed on downgrades?", back: "Using the braking effect of the engine." },
+            { front: "How much following distance should you maintain at speeds below 40 mph?", back: "At least one second for each 10 feet of vehicle length." },
+            { front: "How much additional following distance is needed at speeds over 40 mph?", back: "Add 1 second for safety." },
+            { front: "Why is a high center of gravity dangerous?", back: "It makes the vehicle top-heavy and easy to roll over, especially in curves or sudden swerving." }
+        ];
+
+        // --- DOM Elements ---
+        // Getting references to the HTML elements we'll need to interact with.
+        const flashcardContainer = document.getElementById('flashcard-container');
+        const cardFrontText = document.querySelector('#flashcard-front p');
+        const cardBackText = document.querySelector('#flashcard-back p');
+        const prevButton = document.getElementById('prev-btn');
+        const nextButton = document.getElementById('next-btn');
+        const cardCounter = document.getElementById('card-counter');
+
+        // --- STATE MANAGEMENT ---
+        // Variables to keep track of the current state of the application.
+        let currentIndex = 0; // The index of the current card being shown.
+        let isFlipped = false; // A boolean to track if the card is flipped or not.
+
+        // --- FUNCTIONS ---
+
+        /**
+         * Function to display a card based on its index in the data array.
+         * @param {number} index - The index of the card to display.
+         */
+        function showCard(index) {
+            // Get the card data for the given index.
+            const card = flashcardData[index];
+            // Update the text content of the front and back of the card.
+            cardFrontText.textContent = card.front;
+            cardBackText.textContent = card.back;
+            // Update the counter text.
+            cardCounter.textContent = `${index + 1} / ${flashcardData.length}`;
+            // Ensure the card is showing the front face when a new card is loaded.
+            if (isFlipped) {
+                flipCard(); 
+            }
+        }
+
+        /**
+         * Function to flip the card.
+         */
+        function flipCard() {
+            // Toggle the 'is-flipped' class on the container.
+            flashcardContainer.classList.toggle('is-flipped');
+            // Update the state variable.
+            isFlipped = !isFlipped;
+        }
+
+        /**
+         * Function to show the next card in the deck.
+         */
+        function showNextCard() {
+            // Increment the index, but loop back to the start if we're at the end.
+            currentIndex = (currentIndex + 1) % flashcardData.length;
+            showCard(currentIndex);
+        }
+
+        /**
+         * Function to show the previous card in the deck.
+         */
+        function showPrevCard() {
+            // Decrement the index, looping to the end if we're at the beginning.
+            if (currentIndex === 0) {
+                currentIndex = flashcardData.length - 1;
+            } else {
+                currentIndex = currentIndex - 1;
+            }
+            showCard(currentIndex);
+        }
+
+        // --- EVENT LISTENERS ---
+
+        // Add a click listener to the entire flashcard to flip it.
+        flashcardContainer.addEventListener('click', flipCard);
+
+        // Add a click listener to the 'Next' button.
+        nextButton.addEventListener('click', showNextCard);
+
+        // Add a click listener to the 'Previous' button.
+        prevButton.addEventListener('click', showPrevCard);
+
+        // Add keyboard navigation.
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowRight') {
+                showNextCard();
+            } else if (event.key === 'ArrowLeft') {
+                showPrevCard();
+            } else if (event.key === ' ' || event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+                event.preventDefault(); // Prevent spacebar from scrolling the page
+                flipCard();
+            }
+        });
+
+        // --- INITIALIZATION ---
+        // This code runs when the page first loads.
+        document.addEventListener('DOMContentLoaded', () => {
+            // Display the first card.
+            showCard(currentIndex);
+            // Initialize Feather Icons.
+            feather.replace();
+        });
+
+    </script>
+</body>
+</html>
